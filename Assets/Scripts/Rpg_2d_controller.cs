@@ -35,7 +35,7 @@ public class Rpg_2d_controller : MonoBehaviour
         //Idles
         animation.SetBool("Walking", isWalking);
         //Walking
-        if (isWalking)
+        if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
         {
             animation.SetFloat("Horizontal", horizontal);
             animation.SetFloat("Vertical", vertical);
@@ -43,7 +43,7 @@ public class Rpg_2d_controller : MonoBehaviour
         }
 
         //Attack
-        animation.SetBool("Attack", isAttacking);
+        Attack(isAttacking);
 
         //Pick Up Item
         if (Input.GetKeyDown(KeyCode.J))
@@ -65,6 +65,10 @@ public class Rpg_2d_controller : MonoBehaviour
         return newPosition;
     }
 
+    private void Walk(bool walking, Animator animation)
+    {
+    }
+
     private void PickUpItem()
     {
         animation.SetTrigger("PickUpItem");
@@ -73,5 +77,13 @@ public class Rpg_2d_controller : MonoBehaviour
     private void PutDownItem()
     {
         animation.SetTrigger("PutDownItem");
+    }
+
+    private void Attack(bool attacking)
+    {
+        if (attacking)
+        {
+            animation.SetTrigger("Attack");
+        }
     }
 }
