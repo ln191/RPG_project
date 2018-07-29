@@ -26,10 +26,12 @@ public class Rpg_2d_controller : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        //Inputs
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
         isAttacking = Input.GetKeyDown(KeyCode.K);
         isWalking = (horizontal == 0 && vertical == 0) ? false : true;
+
         //Idles
         animation.SetBool("Walking", isWalking);
         //Walking
@@ -42,6 +44,17 @@ public class Rpg_2d_controller : MonoBehaviour
 
         //Attack
         animation.SetBool("Attack", isAttacking);
+
+        //Pick Up Item
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            PickUpItem();
+        }
+        //Put Down Item
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            PutDownItem();
+        }
     }
 
     private Vector3 Move(float horizontalInput, float verticalInput)
@@ -50,5 +63,15 @@ public class Rpg_2d_controller : MonoBehaviour
         newPosition.x += horizontalInput * speed * Time.deltaTime;
         newPosition.y += verticalInput * speed * Time.deltaTime;
         return newPosition;
+    }
+
+    private void PickUpItem()
+    {
+        animation.SetTrigger("PickUpItem");
+    }
+
+    private void PutDownItem()
+    {
+        animation.SetTrigger("PutDownItem");
     }
 }
