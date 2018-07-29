@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate bool MovementDetection(float horizontal, float vertical);
+
 [RequireComponent(typeof(Animator))]
 public class Rpg_2d_controller : MonoBehaviour
 {
     private bool isAttacking = false;
+    private bool isWalking = false;
 
     [SerializeField]
     private float speed = 5f;
@@ -25,18 +28,20 @@ public class Rpg_2d_controller : MonoBehaviour
     {
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
-
-        if (horizontal == 0 && vertical == 0)
+        isAttacking = Input.GetKeyDown(KeyCode.K);
+        isWalking = (horizontal == 0 && vertical == 0) ? false : true;
+        //Idles
+        animation.SetBool("Walking", isWalking);
+        //Walking
+        if (isWalking)
         {
-            animation.SetBool("Walking", false);
-        }
-        else
-        {
-            animation.SetBool("Walking", true);
             animation.SetFloat("Horizontal", horizontal);
             animation.SetFloat("Vertical", vertical);
             transform.position = Move(horizontal, vertical);
         }
+
+        //Attack
+        animation.SetBool("Attack", isAttacking);
     }
 
     private Vector3 Move(float horizontalInput, float verticalInput)
