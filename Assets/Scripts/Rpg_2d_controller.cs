@@ -40,14 +40,15 @@ public class Rpg_2d_controller : MonoBehaviour
         isWalking = (horizontal == 0 && vertical == 0) ? false : true;
 
         //Idles
-        animation.SetBool("Walking", isWalking);
+        //animation.SetBool("Walking", isWalking);
         //Walking
-        if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
-        {
-            animation.SetFloat("Horizontal", horizontal);
-            animation.SetFloat("Vertical", vertical);
-            transform.position = Move(horizontal, vertical);
-        }
+        //if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
+        //{
+        //    animation.SetFloat("Horizontal", horizontal);
+        //    animation.SetFloat("Vertical", vertical);
+        //    //transform.position = Move(horizontal, vertical);
+        //    transform.Translate(horizontal * speed * Time.deltaTime, vertical * speed * Time.deltaTime, 0);
+        //}
 
         //Attack
         Attack(isAttacking);
@@ -61,6 +62,26 @@ public class Rpg_2d_controller : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.L))
         {
             PutDownItem();
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        //Walking
+        if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
+        {
+            transform.Translate(horizontal * speed, vertical * speed, 0);
+        }
+    }
+
+    private void LateUpdate()
+    {
+        animation.SetBool("Walking", isWalking);
+
+        if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
+        {
+            animation.SetFloat("Horizontal", horizontal);
+            animation.SetFloat("Vertical", vertical);
         }
     }
 
