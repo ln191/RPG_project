@@ -13,9 +13,16 @@ public class Rpg_2d_controller : MonoBehaviour
     [SerializeField]
     private float speed = 5f;
 
+    [Range(0, 1)]
+    [SerializeField]
+    private float range = 0.25f;
+
     private float horizontal = 0;
     private float vertical = 0;
     private Animator animation;
+
+    [SerializeField]
+    private GameObject attack_range_area;
 
     // Use this for initialization
     private void Awake()
@@ -83,7 +90,12 @@ public class Rpg_2d_controller : MonoBehaviour
     {
         if (attacking)
         {
+            attack_range_area.transform.position = new Vector3(transform.position.x + (animation.GetFloat("Horizontal") * range), transform.position.y + (animation.GetFloat("Vertical") * range), transform.position.z);
             animation.SetTrigger("Attack");
         }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
     }
 }
