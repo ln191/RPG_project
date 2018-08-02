@@ -127,8 +127,8 @@ GameObject:
   - component: {fileID: 40054933}
   - component: {fileID: 40054932}
   m_Layer: 0
-  m_Name: Tilemap_1
-  m_TagString: Untagged
+  m_Name: static_obj
+  m_TagString: Static_obj
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1903,7 +1903,7 @@ GameObject:
   - component: {fileID: 56347074}
   - component: {fileID: 56347073}
   m_Layer: 0
-  m_Name: Tilemap_2
+  m_Name: Dynamic_objs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2132,9 +2132,11 @@ GameObject:
   m_Component:
   - component: {fileID: 797771297}
   - component: {fileID: 797771296}
+  - component: {fileID: 797771298}
+  - component: {fileID: 797771299}
   m_Layer: 0
   m_Name: enemy_spider
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2198,6 +2200,43 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &797771298
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 797771295}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!114 &797771299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 797771295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 603504eb1a6f563418b6fbadb3eec5c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 1
 --- !u!1 &1402005982
 GameObject:
   m_ObjectHideFlags: 0
@@ -2271,7 +2310,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: -0.03, y: -0.15}
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 0.3
 --- !u!4 &1555424770
 Transform:
   m_ObjectHideFlags: 0
@@ -2298,7 +2337,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4210568537129498, guid: 7ef53aef6d9574d4e85a7d999a6647a5, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -3.036
+      value: -3.21
       objectReference: {fileID: 0}
     - target: {fileID: 4210568537129498, guid: 7ef53aef6d9574d4e85a7d999a6647a5, type: 2}
       propertyPath: m_LocalPosition.z
@@ -2339,6 +2378,11 @@ Prefab:
       propertyPath: speed
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 114556424928776570, guid: 7ef53aef6d9574d4e85a7d999a6647a5,
+        type: 2}
+      propertyPath: range
+      value: 0.407
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7ef53aef6d9574d4e85a7d999a6647a5, type: 2}
   m_IsPrefabAsset: 0
@@ -2364,7 +2408,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.3}
+  m_Offset: {x: 0, y: -0.25}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
