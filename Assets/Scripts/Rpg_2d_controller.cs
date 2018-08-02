@@ -9,6 +9,7 @@ public class Rpg_2d_controller : MonoBehaviour
 {
     private bool isAttacking = false;
     private bool isWalking = false;
+    private List<GameObject> ObjectsinRange = new List<GameObject>();
 
     [SerializeField]
     private float speed = 5f;
@@ -36,7 +37,7 @@ public class Rpg_2d_controller : MonoBehaviour
         //Inputs
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
-        isAttacking = Input.GetKeyDown(KeyCode.K);
+        //isAttacking = Input.GetKeyDown(KeyCode.K);
         isWalking = (horizontal == 0 && vertical == 0) ? false : true;
 
         //Idles
@@ -51,7 +52,10 @@ public class Rpg_2d_controller : MonoBehaviour
         //}
 
         //Attack
-        Attack(isAttacking);
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Attack(1);
+        }
 
         //Pick Up Item
         if (Input.GetKeyDown(KeyCode.J))
@@ -72,6 +76,7 @@ public class Rpg_2d_controller : MonoBehaviour
         {
             transform.Translate(horizontal * speed, vertical * speed, 0);
         }
+        attack_range_area.transform.position = new Vector3(transform.position.x + (animation.GetFloat("Horizontal") * range), transform.position.y + (animation.GetFloat("Vertical") * range), transform.position.z);
     }
 
     private void LateUpdate()
@@ -107,16 +112,35 @@ public class Rpg_2d_controller : MonoBehaviour
         animation.SetTrigger("PutDownItem");
     }
 
-    private void Attack(bool attacking)
+    private void Attack(int damage)
     {
-        if (attacking)
+        //attack_range_area.transform.position = new Vector3(transform.position.x + (animation.GetFloat("Horizontal") * range), transform.position.y + (animation.GetFloat("Vertical") * range), transform.position.z);
+        animation.SetTrigger("Attack");
+
+        for (int obj = 0; obj < ObjectsinRange.Count; obj++)
         {
-            attack_range_area.transform.position = new Vector3(transform.position.x + (animation.GetFloat("Horizontal") * range), transform.position.y + (animation.GetFloat("Vertical") * range), transform.position.z);
-            animation.SetTrigger("Attack");
+            if (ObjectsinRange[obj].tag == "Enemy")
+            {
+                ObjectsinRange[obj].GetComponent<Enemy_2d_controller>().TakenDamage(damage);
+            }
         }
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!ObjectsinRange.Contains(other.gameObject) && other.gameObject != this.gameObject && other.gameObject.tag != "Static_obj")
+        {
+            ObjectsinRange.Add(other.gameObject);
+            Debug.Log(other.gameObject + "added to list");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (ObjectsinRange.Contains(other.gameObject) && other.gameObject != this.gameObject && other.gameObject.tag != "Static_obj")
+        {
+            ObjectsinRange.Remove(other.gameObject);
+            Debug.Log(other.gameObject + "removed to list");
+        }
     }
 }
