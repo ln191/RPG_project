@@ -9,7 +9,8 @@ public class Rpg_2d_controller : MonoBehaviour
 {
     private bool isAttacking = false;
     private bool isWalking = false;
-    private List<GameObject> ObjectsinRange = new List<GameObject>();
+    private GameObject holdingItem = null;
+    private List<GameObject> objectsinRange = new List<GameObject>();
 
     [SerializeField]
     private float speed = 5f;
@@ -40,30 +41,19 @@ public class Rpg_2d_controller : MonoBehaviour
         //isAttacking = Input.GetKeyDown(KeyCode.K);
         isWalking = (horizontal == 0 && vertical == 0) ? false : true;
 
-        //Idles
-        //animation.SetBool("Walking", isWalking);
-        //Walking
-        //if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
-        //{
-        //    animation.SetFloat("Horizontal", horizontal);
-        //    animation.SetFloat("Vertical", vertical);
-        //    //transform.position = Move(horizontal, vertical);
-        //    transform.Translate(horizontal * speed * Time.deltaTime, vertical * speed * Time.deltaTime, 0);
-        //}
-
         //Attack
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.K) && !holdingItem)
         {
             Attack(1);
         }
 
         //Pick Up Item
-        if (Input.GetKeyDown(KeyCode.J))
+        if (Input.GetKeyDown(KeyCode.J) && !holdingItem)
         {
             PickUpItem();
         }
         //Put Down Item
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.L) && holdingItem)
         {
             PutDownItem();
         }
@@ -75,12 +65,19 @@ public class Rpg_2d_controller : MonoBehaviour
         if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
         {
             transform.Translate(horizontal * speed, vertical * speed, 0);
+            if (holdingItem)
+            {
+                HoldingItem();
+            }
         }
+
         attack_range_area.transform.position = new Vector3(transform.position.x + (animation.GetFloat("Horizontal") * range), transform.position.y + (animation.GetFloat("Vertical") * range), transform.position.z);
     }
 
     private void LateUpdate()
     {
+        //Animation
+
         animation.SetBool("Walking", isWalking);
 
         if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
@@ -90,26 +87,46 @@ public class Rpg_2d_controller : MonoBehaviour
         }
     }
 
-    private Vector3 Move(float horizontalInput, float verticalInput)
+    private GameObject ObjectInRange(string tag)
     {
-        Vector3 newPosition = transform.position;
-        newPosition.x += horizontalInput * speed * Time.deltaTime;
-        newPosition.y += verticalInput * speed * Time.deltaTime;
-        return newPosition;
-    }
-
-    private void Walk(bool walking, Animator animation)
-    {
+        if (objectsinRange.Count > 0)
+        {
+            for (int obj = 0; obj < objectsinRange.Count; obj++)
+            {
+                if (objectsinRange[obj].tag == tag)
+                {
+                    return objectsinRange[obj];
+                }
+            }
+        }
+        return null;
     }
 
     private void PickUpItem()
     {
-        animation.SetTrigger("PickUpItem");
+        holdingItem = ObjectInRange("Pickup_item");
+        if (holdingItem)
+        {
+            animation.SetTrigger("PickUpItem");
+            holdingItem.transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+            holdingItem.GetComponent<SpriteRenderer>().sortingOrder = 5;
+        }
+    }
+
+    private void HoldingItem()
+    {
+        holdingItem.transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
     }
 
     private void PutDownItem()
     {
-        animation.SetTrigger("PutDownItem");
+        if (holdingItem)
+        {
+            animation.SetTrigger("PutDownItem");
+            holdingItem.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, transform.position.z);
+            holdingItem.GetComponent<SpriteRenderer>().sortingOrder = 0;
+            holdingItem = null;
+        }
     }
 
     private void Attack(int damage)
@@ -117,30 +134,30 @@ public class Rpg_2d_controller : MonoBehaviour
         //attack_range_area.transform.position = new Vector3(transform.position.x + (animation.GetFloat("Horizontal") * range), transform.position.y + (animation.GetFloat("Vertical") * range), transform.position.z);
         animation.SetTrigger("Attack");
 
-        for (int obj = 0; obj < ObjectsinRange.Count; obj++)
+        for (int obj = 0; obj < objectsinRange.Count; obj++)
         {
-            if (ObjectsinRange[obj].tag == "Enemy")
+            if (objectsinRange[obj].tag == "Enemy")
             {
-                ObjectsinRange[obj].GetComponent<Enemy_2d_controller>().TakenDamage(damage);
+                objectsinRange[obj].GetComponent<Enemy_2d_controller>().TakenDamage(damage);
             }
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!ObjectsinRange.Contains(other.gameObject) && other.gameObject != this.gameObject && other.gameObject.tag != "Static_obj")
+        if (!objectsinRange.Contains(other.gameObject) && other.gameObject != this.gameObject && other.gameObject.tag != "Static_obj")
         {
-            ObjectsinRange.Add(other.gameObject);
+            objectsinRange.Add(other.gameObject);
             Debug.Log(other.gameObject + "added to list");
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (ObjectsinRange.Contains(other.gameObject) && other.gameObject != this.gameObject && other.gameObject.tag != "Static_obj")
+        if (objectsinRange.Contains(other.gameObject) && other.gameObject != this.gameObject && other.gameObject.tag != "Static_obj")
         {
-            ObjectsinRange.Remove(other.gameObject);
-            Debug.Log(other.gameObject + "removed to list");
+            objectsinRange.Remove(other.gameObject);
+            Debug.Log(other.gameObject + "removed from list");
         }
     }
 }

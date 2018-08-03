@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - Static_obj
+  - Pickup_item
   layers:
   - Default
   - TransparentFX
