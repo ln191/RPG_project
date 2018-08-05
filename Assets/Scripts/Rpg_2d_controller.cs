@@ -38,7 +38,7 @@ public class Rpg_2d_controller : MonoBehaviour
         //Inputs
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
-        isAttacking = Input.GetKeyDown(KeyCode.K);
+        isAttacking = Input.GetButtonDown("Fire2");
         isWalking = (horizontal == 0 && vertical == 0) ? false : true;
 
         //Attack
@@ -48,7 +48,7 @@ public class Rpg_2d_controller : MonoBehaviour
         }
 
         //Pick Up Item
-        if (Input.GetKeyDown(KeyCode.J))
+        if (Input.GetButtonDown("Fire1"))
         {
             if (!holdingItem)
             {
