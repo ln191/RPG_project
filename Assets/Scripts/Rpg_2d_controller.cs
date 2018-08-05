@@ -38,24 +38,26 @@ public class Rpg_2d_controller : MonoBehaviour
         //Inputs
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
-        //isAttacking = Input.GetKeyDown(KeyCode.K);
+        isAttacking = Input.GetKeyDown(KeyCode.K);
         isWalking = (horizontal == 0 && vertical == 0) ? false : true;
 
         //Attack
-        if (Input.GetKeyDown(KeyCode.K) && !holdingItem)
+        if (isAttacking && !holdingItem)
         {
             Attack(1);
         }
 
         //Pick Up Item
-        if (Input.GetKeyDown(KeyCode.J) && !holdingItem)
+        if (Input.GetKeyDown(KeyCode.J))
         {
-            PickUpItem();
-        }
-        //Put Down Item
-        if (Input.GetKeyDown(KeyCode.L) && holdingItem)
-        {
-            PutDownItem();
+            if (!holdingItem)
+            {
+                PickUpItem();
+            }
+            else
+            {
+                PutDownItem();
+            }
         }
     }
 
@@ -78,6 +80,7 @@ public class Rpg_2d_controller : MonoBehaviour
     {
         //Animation
 
+        //walking
         animation.SetBool("Walking", isWalking);
 
         if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
@@ -85,6 +88,10 @@ public class Rpg_2d_controller : MonoBehaviour
             animation.SetFloat("Horizontal", horizontal);
             animation.SetFloat("Vertical", vertical);
         }
+
+        //Attack
+
+        //Pickup/down
     }
 
     private GameObject ObjectInRange(string tag)
@@ -105,6 +112,7 @@ public class Rpg_2d_controller : MonoBehaviour
     private void PickUpItem()
     {
         holdingItem = ObjectInRange("Pickup_item");
+        //see if it found a item in range
         if (holdingItem)
         {
             animation.SetTrigger("PickUpItem");
@@ -120,18 +128,14 @@ public class Rpg_2d_controller : MonoBehaviour
 
     private void PutDownItem()
     {
-        if (holdingItem)
-        {
-            animation.SetTrigger("PutDownItem");
-            holdingItem.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, transform.position.z);
-            holdingItem.GetComponent<SpriteRenderer>().sortingOrder = 0;
-            holdingItem = null;
-        }
+        animation.SetTrigger("PickUpItem");
+        holdingItem.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, transform.position.z);
+        holdingItem.GetComponent<SpriteRenderer>().sortingOrder = 0;
+        holdingItem = null;
     }
 
     private void Attack(int damage)
     {
-        //attack_range_area.transform.position = new Vector3(transform.position.x + (animation.GetFloat("Horizontal") * range), transform.position.y + (animation.GetFloat("Vertical") * range), transform.position.z);
         animation.SetTrigger("Attack");
 
         for (int obj = 0; obj < objectsinRange.Count; obj++)
