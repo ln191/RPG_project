@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,8 +10,14 @@ public class Rpg_2d_controller : MonoBehaviour
 {
     private bool isAttacking = false;
     private bool isWalking = false;
+
+    [SerializeField]
+    private bool fourDirectionsOnly = false;
+
     private GameObject holdingItem = null;
     private List<GameObject> objectsinRange = new List<GameObject>();
+
+    private Vector3 direction = Vector3.down;
 
     [SerializeField]
     private float speed = 5f;
@@ -66,7 +73,10 @@ public class Rpg_2d_controller : MonoBehaviour
         //Walking
         if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
         {
-            transform.Translate(horizontal * speed, vertical * speed, 0);
+            CalculateDirection(fourDirectionsOnly);
+            //transform.Translate(horizontal * speed, vertical * speed, 0);
+            //makes sure that if you move diagonally you will not move faster than if you move straight
+            transform.Translate((Math.Abs(direction.x) == Math.Abs(direction.y)) ? direction * (speed * 0.75f) : direction * speed);
             if (holdingItem)
             {
                 HoldingItem();
@@ -85,13 +95,38 @@ public class Rpg_2d_controller : MonoBehaviour
 
         if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
         {
-            animation.SetFloat("Horizontal", horizontal);
-            animation.SetFloat("Vertical", vertical);
+            animation.SetFloat("Horizontal", direction.x);
+            animation.SetFloat("Vertical", direction.y);
         }
 
         //Attack
 
         //Pickup/down
+    }
+
+    private void CalculateDirection(bool fourDirectionsOnly)
+    {
+        int xaxis = 0;
+        int yaxis = 0;
+        if (fourDirectionsOnly)
+        {
+            if (Mathf.Abs(horizontal) > Mathf.Abs(vertical))
+                xaxis = horizontal > 0 ? 1 : -1;
+            else
+                yaxis = vertical > 0 ? 1 : -1;
+        }
+        else
+        {
+            if (horizontal != 0)
+            {
+                xaxis = horizontal > 0 ? 1 : -1;
+            }
+            if (vertical != 0)
+            {
+                yaxis = vertical > 0 ? 1 : -1;
+            }
+        }
+        direction = new Vector3(1f * xaxis, 1f * yaxis, 0f);
     }
 
     private GameObject ObjectInRange(string tag)
@@ -129,7 +164,14 @@ public class Rpg_2d_controller : MonoBehaviour
     private void PutDownItem()
     {
         animation.SetTrigger("PickUpItem");
-        holdingItem.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, transform.position.z);
+        if (animation.GetFloat("Vertical") == 0)
+        {
+            holdingItem.transform.position = new Vector3(transform.position.x + (animation.GetFloat("Horizontal") * 0.8f), transform.position.y - 0.5f, transform.position.z);
+        }
+        else
+        {
+            holdingItem.transform.position = new Vector3(transform.position.x + (animation.GetFloat("Horizontal") * 0.8f), transform.position.y + (animation.GetFloat("Vertical") * 0.8f), transform.position.z);
+        }
         holdingItem.GetComponent<SpriteRenderer>().sortingOrder = 0;
         holdingItem = null;
     }
