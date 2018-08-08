@@ -2,27 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_2d_controller : MonoBehaviour
+public class Enemy_2d_controller : Rpg_2d_Unit_Controller
 {
-    [SerializeField]
-    private int health = 1;
-
-    // Use this for initialization
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
     }
 
-    // Update is called once per frame
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
     }
 
-    public void TakenDamage(int damage)
+    protected override void LateUpdate()
     {
-        health -= damage;
-        if (health <= 0)
-        {
-            Destroy(this.gameObject);
-        }
+        base.LateUpdate();
+    }
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
     }
 }

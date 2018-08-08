@@ -2225,6 +2225,7 @@ GameObject:
   - component: {fileID: 797771296}
   - component: {fileID: 797771298}
   - component: {fileID: 797771299}
+  - component: {fileID: 797771300}
   m_Layer: 0
   m_Name: enemy_spider
   m_TagString: Enemy
@@ -2328,6 +2329,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 10
+  speed: 5
+  range: 0.25
+--- !u!95 &797771300
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 797771295}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 22a2ffb9cb23b3a4da8bfe517c4356a9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1402005982
 GameObject:
   m_ObjectHideFlags: 0
@@ -2428,7 +2449,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4210568537129498, guid: 7ef53aef6d9574d4e85a7d999a6647a5, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -3.21
+      value: 2.1
       objectReference: {fileID: 0}
     - target: {fileID: 4210568537129498, guid: 7ef53aef6d9574d4e85a7d999a6647a5, type: 2}
       propertyPath: m_LocalPosition.z
@@ -2474,7 +2495,17 @@ Prefab:
       propertyPath: range
       value: 0.407
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 114556424928776570, guid: 7ef53aef6d9574d4e85a7d999a6647a5,
+        type: 2}
+      propertyPath: fourDirectionsOnly
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1062804229408838, guid: 7ef53aef6d9574d4e85a7d999a6647a5, type: 2}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114556424928776570, guid: 7ef53aef6d9574d4e85a7d999a6647a5, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 7ef53aef6d9574d4e85a7d999a6647a5, type: 2}
   m_IsPrefabAsset: 0
 --- !u!1 &1638681308 stripped
@@ -2482,6 +2513,22 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1062804229408838, guid: 7ef53aef6d9574d4e85a7d999a6647a5,
     type: 2}
   m_PrefabInternal: {fileID: 1599072798}
+--- !u!114 &1638681309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1638681308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2a699f666177844d822ce478aa55858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 1
+  speed: 0.1
+  range: 0.25
+  fourDirectionsOnly: 1
+  attack_range_area: {fileID: 1555424768}
 --- !u!4 &1638681312 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4210568537129498, guid: 7ef53aef6d9574d4e85a7d999a6647a5,

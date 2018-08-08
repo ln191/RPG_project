@@ -6,7 +6,7 @@ using UnityEngine;
 public delegate bool MovementDetection(float horizontal, float vertical);
 
 [RequireComponent(typeof(Animator))]
-public class Rpg_2d_controller : MonoBehaviour
+public class Rpg_2d_Player_Controller : Rpg_2d_Unit_Controller
 {
     private bool isAttacking = false;
     private bool isWalking = false;
@@ -15,32 +15,21 @@ public class Rpg_2d_controller : MonoBehaviour
     private bool fourDirectionsOnly = false;
 
     private GameObject holdingItem = null;
-    private List<GameObject> objectsinRange = new List<GameObject>();
-
-    private Vector3 direction = Vector3.down;
-
-    [SerializeField]
-    private float speed = 5f;
-
-    [Range(0, 1)]
-    [SerializeField]
-    private float range = 0.25f;
 
     private float horizontal = 0;
     private float vertical = 0;
-    private Animator animation;
 
     [SerializeField]
     private GameObject attack_range_area;
 
     // Use this for initialization
-    private void Awake()
+    protected override void Awake()
     {
-        animation = GetComponent<Animator>();
+        base.Awake();
     }
 
     // Update is called once per frame
-    private void Update()
+    protected override void Update()
     {
         //Inputs
         horizontal = Input.GetAxisRaw("Horizontal");
@@ -51,7 +40,7 @@ public class Rpg_2d_controller : MonoBehaviour
         //Attack
         if (isAttacking && !holdingItem)
         {
-            Attack(1);
+            Attack(1, "Enemy");
         }
 
         //Pick Up Item
@@ -66,9 +55,11 @@ public class Rpg_2d_controller : MonoBehaviour
                 PutDownItem();
             }
         }
+
+        base.Update();
     }
 
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {
         //Walking
         if (isWalking && !animation.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
@@ -84,9 +75,11 @@ public class Rpg_2d_controller : MonoBehaviour
         }
 
         attack_range_area.transform.position = new Vector3(transform.position.x + (animation.GetFloat("Horizontal") * range), transform.position.y + (animation.GetFloat("Vertical") * range), transform.position.z);
+
+        base.FixedUpdate();
     }
 
-    private void LateUpdate()
+    protected override void LateUpdate()
     {
         //Animation
 
@@ -102,6 +95,8 @@ public class Rpg_2d_controller : MonoBehaviour
         //Attack
 
         //Pickup/down
+
+        base.LateUpdate();
     }
 
     private void CalculateDirection(bool fourDirectionsOnly)
@@ -174,36 +169,5 @@ public class Rpg_2d_controller : MonoBehaviour
         }
         holdingItem.GetComponent<SpriteRenderer>().sortingOrder = 0;
         holdingItem = null;
-    }
-
-    private void Attack(int damage)
-    {
-        animation.SetTrigger("Attack");
-
-        for (int obj = 0; obj < objectsinRange.Count; obj++)
-        {
-            if (objectsinRange[obj].tag == "Enemy")
-            {
-                objectsinRange[obj].GetComponent<Enemy_2d_controller>().TakenDamage(damage);
-            }
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!objectsinRange.Contains(other.gameObject) && other.gameObject != this.gameObject && other.gameObject.tag != "Static_obj")
-        {
-            objectsinRange.Add(other.gameObject);
-            Debug.Log(other.gameObject + "added to list");
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (objectsinRange.Contains(other.gameObject) && other.gameObject != this.gameObject && other.gameObject.tag != "Static_obj")
-        {
-            objectsinRange.Remove(other.gameObject);
-            Debug.Log(other.gameObject + "removed from list");
-        }
     }
 }
