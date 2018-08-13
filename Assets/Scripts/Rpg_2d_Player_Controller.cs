@@ -19,9 +19,6 @@ public class Rpg_2d_Player_Controller : Rpg_2d_Unit_Controller
     private float horizontal = 0;
     private float vertical = 0;
 
-    [SerializeField]
-    private GameObject attack_range_area;
-
     // Use this for initialization
     protected override void Awake()
     {
@@ -169,5 +166,11 @@ public class Rpg_2d_Player_Controller : Rpg_2d_Unit_Controller
         }
         holdingItem.GetComponent<SpriteRenderer>().sortingOrder = 0;
         holdingItem = null;
+    }
+
+    public override void TakenDamage(int damage)
+    {
+        base.TakenDamage(damage);
+        UI.instance.UpdateLifeGUI(health);
     }
 }
